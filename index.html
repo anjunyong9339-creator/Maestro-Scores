@@ -49,9 +49,13 @@
         scrollbar-width: none;
       }
     </style>
-    <!-- 환경 변수 process.env가 정의되지 않은 환경을 위한 폴리필 -->
     <script>
-      window.process = window.process || { env: {} };
+      // More robust process.env polyfill
+      window.process = { 
+        env: { 
+          API_KEY: "" 
+        } 
+      };
     </script>
     <script type="importmap">
     {
@@ -67,7 +71,6 @@
   </head>
   <body class="bg-stone-50 text-stone-900">
     <div id="root"></div>
-    <!-- 애플리케이션의 시작점인 index.tsx를 모듈로 로드합니다. -->
     <script type="module" src="index.tsx"></script>
   </body>
 </html>

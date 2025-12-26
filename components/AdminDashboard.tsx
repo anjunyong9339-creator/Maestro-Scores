@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
-import { Product, FileType } from '../types';
+import { Product, FileType } from '../types.ts';
 import { 
   ArrowLeft, Plus, Trash2, Package, Tag, FileText, 
   Music2, Layers, Image as ImageIcon, Save, AlertCircle, CheckCircle2,

@@ -1,14 +1,14 @@
 
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import Navbar from './components/Navbar';
-import ProductCard from './components/ProductCard';
-import ProductDetail from './components/ProductDetail';
-import AdminDashboard from './components/AdminDashboard';
-import CheckoutForm from './components/CheckoutForm';
-import DownloadPortal from './components/DownloadPortal';
-import AIAssistant from './components/AIAssistant';
-import { MOCK_PRODUCTS } from './constants';
-import { CartItem, Product, PurchaseRecord, FileType } from './types';
+import React, { useState, useMemo, useEffect } from 'react';
+import Navbar from './components/Navbar.tsx';
+import ProductCard from './components/ProductCard.tsx';
+import ProductDetail from './components/ProductDetail.tsx';
+import AdminDashboard from './components/AdminDashboard.tsx';
+import CheckoutForm from './components/CheckoutForm.tsx';
+import DownloadPortal from './components/DownloadPortal.tsx';
+import AIAssistant from './components/AIAssistant.tsx';
+import { MOCK_PRODUCTS } from './constants.tsx';
+import { CartItem, Product, PurchaseRecord, FileType } from './types.ts';
 import { 
   ShoppingBag, X, Music, ArrowRight, ShieldCheck, SearchX, 
   Package, CreditCard, Settings, LogOut, ChevronLeft, 
@@ -19,7 +19,7 @@ interface RegisteredUser {
   id: string;
   name: string;
   email: string;
-  password?: string; // For mock validation
+  password?: string;
   joinDate: string;
   totalSpent: number;
   purchases: number;
@@ -44,13 +44,21 @@ const ADMIN_CODE = "102030";
 
 const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>(() => {
-    const saved = localStorage.getItem('maestro_products');
-    return saved ? JSON.parse(saved) : MOCK_PRODUCTS;
+    try {
+      const saved = localStorage.getItem('maestro_products');
+      return saved ? JSON.parse(saved) : MOCK_PRODUCTS;
+    } catch {
+      return MOCK_PRODUCTS;
+    }
   });
 
   const [registeredUsers, setRegisteredUsers] = useState<RegisteredUser[]>(() => {
-    const saved = localStorage.getItem('maestro_users');
-    return saved ? JSON.parse(saved) : INITIAL_USERS;
+    try {
+      const saved = localStorage.getItem('maestro_users');
+      return saved ? JSON.parse(saved) : INITIAL_USERS;
+    } catch {
+      return INITIAL_USERS;
+    }
   });
 
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -64,20 +72,17 @@ const App: React.FC = () => {
   const [selectedType, setSelectedType] = useState<FileType | 'ALL'>('ALL');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   
-  // Auth States
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [authModal, setAuthModal] = useState<'login' | 'signup' | 'forgot_password' | null>(null);
   const [userProfile, setUserProfile] = useState({ name: 'Guest', email: '' });
   const [resetSent, setResetSent] = useState(false);
 
-  // Form states
   const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
   const [authConfirmPassword, setAuthConfirmPassword] = useState('');
   const [authName, setAuthName] = useState('');
   const [authError, setAuthError] = useState('');
 
-  // Admin Auth
   const [showAdminAuthModal, setShowAdminAuthModal] = useState(false);
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [adminAuthInput, setAdminAuthInput] = useState("");
@@ -105,10 +110,7 @@ const App: React.FC = () => {
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError('');
-    
-    // Validate against registered users
     const user = registeredUsers.find(u => u.email === authEmail && (u.password === authPassword || authPassword === 'admin'));
-    
     if (user) {
       setIsUserLoggedIn(true);
       setUserProfile({ name: user.name, email: user.email });
@@ -123,17 +125,14 @@ const App: React.FC = () => {
   const handleSignupSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setAuthError('');
-
     if (authPassword !== authConfirmPassword) {
       setAuthError('비밀번호가 일치하지 않습니다.');
       return;
     }
-
     if (registeredUsers.some(u => u.email === authEmail)) {
       setAuthError('이미 가입된 이메일 주소입니다.');
       return;
     }
-
     const newUser: RegisteredUser = {
       id: 'u' + Date.now(),
       name: authName,
@@ -143,7 +142,6 @@ const App: React.FC = () => {
       totalSpent: 0,
       purchases: 0
     };
-
     setRegisteredUsers(prev => [newUser, ...prev]);
     setIsUserLoggedIn(true);
     setUserProfile({ name: newUser.name, email: newUser.email });
@@ -346,7 +344,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* Admin Auth Modal */}
       {showAdminAuthModal && (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-6">
           <div className="fixed inset-0 bg-stone-900/80 backdrop-blur-md animate-fade" onClick={() => setShowAdminAuthModal(false)} />
