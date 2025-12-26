@@ -1,0 +1,8 @@
+{
+  "name": "Maestro Digital Storefront",
+  "description": "A high-end platform for composers to sell sheet music and MIDI files, featuring automated Stripe-style checkout, client-side PDF watermarking, and an AI Music Assistant.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
